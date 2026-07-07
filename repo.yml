@@ -3,8 +3,10 @@ type: 'yocto-based OS image'
 reviewers: 1
 upstream:
   - repo: 'layers/meta-balena'
-    url: 'http://github.com/balena-os/meta-balena'
+    url: 'https://github.com/balena-os/meta-balena'
+  - repo: 'layers/meta-rockchip'
+    url: 'https://github.com/radxa/meta-rockchip'
   - repo: 'balena-yocto-scripts'
-    url: 'http://github.com/balena-os/balena-yocto-scripts'
+    url: 'https://github.com/balena-os/balena-yocto-scripts'
   - repo: 'contracts'
     url: 'https://github.com/balena-io/contracts.git'

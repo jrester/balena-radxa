@@ -1,7 +1,10 @@
 # Supported machines
+#MACHINE ?= "rockchip-rk3588-rock-5t"
 #MACHINE ?= "radxa-cm3-io-rk3566"
 #MACHINE ?= "radxa-zero-s905y2"
 #MACHINE ?= "rockpi-4b-rk3399"
+# NOTE: barys injects MACHINE from the device-type (yocto.machine) at bitbake time,
+# so the lines above are only a fallback for manual `MACHINE=... bitbake` runs.
 
 BALENA_STORAGE = "overlay2"
 
@@ -43,7 +46,8 @@ DISTRO ?= "resin-systemd"
 RM_OLD_IMAGE = "1"
 
 # Additional image features
-USER_CLASSES ?= "buildstats image-mklibs image-prelink"
+# (image-mklibs and image-prelink were dunfell-era poky classes, removed in scarthgap)
+USER_CLASSES ?= "buildstats"
 
 # By default disable interactive patch resolution (tasks will just fail instead):
 PATCHRESOLVE = "noop"
@@ -57,6 +61,18 @@ BB_DISKMON_DIRS = "\
     ABORT,${DL_DIR},100M,1K \
     ABORT,${SSTATE_DIR},100M,1K"
 
-CONF_VERSION = "1"
+CONF_VERSION = "2"
 
 HOSTTOOLS += "docker iptables"
+
+# --- ROCK 5T / scarthgap build-environment settings (see scarthgap-fork-plan Phase 3) ---
+
+# crates.io may reject wget's default user-agent from datacenter IPs (Rust recipes
+# like healthdog/fatrw fetch .crate files). Spoof a cargo user-agent.
+FETCHCMD_wget = "/usr/bin/env wget -t 2 -T 30 --passive-ftp --no-check-certificate --user-agent=cargo/1.67.0 "
+
+# Avoid host-uid OEOuthashBasic / hash-equivalence failures in the balena Docker
+# build environment by using the simple basic-hash signature handler.
+BB_SIGNATURE_HANDLER = "OEBasicHash"
+BB_HASHSERVE = ""
+SSTATE_HASHEQUIV_METHOD = ""
